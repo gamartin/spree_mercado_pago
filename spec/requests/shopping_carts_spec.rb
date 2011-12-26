@@ -6,12 +6,7 @@ describe "ShoppingCarts" do
   describe "filling shopping cart" do
     
     before(:each) do 
-      
       @payment_method = Factory.create(:mercado_pago_payment_method)
-      #unless PaymentMethod.find_by_name('Mercado Pago')
-      #PaymentMethod.create(:name => 'Mercado Pago', :active => true, :environment => 'test', :type => 'Spree::BillingIntegration::MercadoPago')
-      #end
-
     end
     
     after(:each) do
