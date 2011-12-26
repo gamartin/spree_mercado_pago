@@ -1,7 +1,6 @@
 module Spree
   CheckoutController.class_eval do
     before_filter :mercado_pago_hook, :only => [:update]
-    #respond_override :update => { :html => { :success => lambda { render :partial => "spree/checkout/payment.html.erb" } } }
 
     def mercado_pago_payment
        payment_method =  PaymentMethod.find(params[:payment_method_id])
