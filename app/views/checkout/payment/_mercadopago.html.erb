@@ -1,0 +1,16 @@
+<p>tajetas de crédito: visa, master ... otras
+pago efectivo: Rapipago, PagoFacil ... otras
+transferencia bancaria
+</p>
+<p>
+  <%= label_tag :order_mercado_pago_account_email, t(:email) %><br />
+  <%= h(@order.email) %>
+</p>
+<p>
+  <%= label_tag :mpago_name, t(:name) %><br />
+  <%= h(@order.bill_address.firstname) %>
+</p>
+<p>
+  <%= label_tag :mpago_surname, t(:surname) %><br />
+  <%= h(@order.bill_address.lastname) %>
+</p>
