@@ -1,6 +1,6 @@
 class Spree::BillingIntegration::MercadoPago < BillingIntegration
-  preference :client_id, :string	#3232
-  preference :client_secret, :string	#yjabDP6vFPkStY8Yc6wPnBTYljpHl2xa
+  preference :client_id, :string	
+  preference :client_secret, :string	
   preference :no_shipping, :boolean, :default => false
   preference :currency, :string, :default => 'ARS'
   preference :token_url, :string, :default => 'https://api.mercadolibre.com/oauth/token'
