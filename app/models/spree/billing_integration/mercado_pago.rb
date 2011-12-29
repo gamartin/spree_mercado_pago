@@ -15,10 +15,11 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
     begin
     resp = request_for_access_token
     parsed = JSON.parse(resp)
-    parsed['access_token']
+    parsed['access_token'] || nil
     rescue Exception => e
          puts 'ERRRROOOOOR ENNNNNNN get token ============'
          puts e.message
+         return nil
     end
   end
 
@@ -30,10 +31,11 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
     begin
     resp = request_for_payment_config(token, data)
     formated = JSON.parse(resp)
-    formated['init_point']
+    formated['init_point'] || nil
     rescue Exception => e
         puts 'ERRRROOOOOR ENNNNNNN CONFIGURE ITEMS ============'
         puts e.message
+        return nil
     end 
   end
   

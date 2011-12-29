@@ -10,6 +10,6 @@ Rails.application.routes.draw do
   
   # Add your extension routes here
   match '/success' => 'checkout#mercado_pago_success'
-  match '/pending' => 'checkout#mercado_pago_pending'
+  match '/pending/:collection_id/:collection_status/:external_reference/:preference_id' => 'checkout#mercado_pago_pending'
   
 end

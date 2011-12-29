@@ -10,14 +10,20 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'factory_girl'
 require 'fakeweb'
+require 'faker'
 require 'json_spec'
+require 'spree_core'
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
+
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-Dir["#{File.dirname(__FILE__)}/factories/**"].each do |f|
+Dir["#{File.dirname(__FILE__)}/factories/*.rb"].each do |f|
+
   fp =  File.expand_path(f)
   require fp
+
 end
+require 'spree_core/testing_support/factories'
 
 RSpec.configure do |config|
   # == Mock Framework

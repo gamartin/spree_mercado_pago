@@ -1,6 +1,7 @@
 
 function process_callback(json) {
-	var pend_url = json.back_url+'?collection_id='+json.collection_id+'?collection_status='+json.collection_status+'?external_reference='+json.external_reference+'?preference_id='+json.preference_id;
+
+  var pend_url = json.back_url+'/'+json.collection_id+'/'+json.collection_status+'/'+json.external_reference+'/'+json.preference_id;
     
   if (json.collection_status=='approved'){
     ;
@@ -18,7 +19,6 @@ function process_callback(json) {
 
   } else if(json.collection_status==null){
     alert ('El usuario no completó el proceso de pago, no se ha generado ningún pago');//cierra ventana 1er o 2do paso
-	window.location = 'http://127.0.0.1:3000/esta?=collection_id'+json.collection_id; //redirects to homepage
 
   }
 }
