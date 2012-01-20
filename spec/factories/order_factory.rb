@@ -1,7 +1,6 @@
-
 Factory.define(:order) do |f|
    f.user_id 1057526573
-   f.number  'R116023470'
+   f.number  'R32343q23'
    f.item_total 13.99
    f.total      18.99
    f.state    'confirm'

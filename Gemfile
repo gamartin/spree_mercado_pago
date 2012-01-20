@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gemspec
+gem 'delayed_job_active_record'
 
 group :test, :development do
   gem 'rspec-rails'

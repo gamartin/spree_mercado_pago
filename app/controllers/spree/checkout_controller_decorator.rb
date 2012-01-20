@@ -5,7 +5,6 @@ module Spree
     def mercado_pago_payment
        payment_method =  PaymentMethod.find(params[:payment_method_id])
        load_order
-       
        @token = payment_method.access_token
        @data = payment_method.merge_data(@order)
        @pay_url = payment_method.payment_button_url(@token, @data)
@@ -13,34 +12,34 @@ module Spree
          gateway_error I18n.t(:unable_to_connect_to_gateway)
          redirect_to edit_order_url(@order)
        end
-       @order.payments.create!(:source_type => 'MercadoPagoAccount', :payment_method_id => params[:payment_method_id]).started_processing! 
+       @order.payments.create!(:source_type => 'MercadoPagoAccount', :payment_method_id => payment_method.id).started_processing! 
     end
     
     def mercado_pago_success
-      load_order
-
- 
+      load_order_payment
+      if params[:collection_status] == 'approved'
+        @order.payment.complete!
+      else
+        log_unexpected
+      end
+      advance_order_status
+      @order.save
     end
     
     def mercado_pago_pending
-      if params[:collection_status] == 'pending'
-        load_order
-        payment_method =  @order.payment_method
-        mercado_pago_account = MercadoPagoAccount.new_from_params(@order, params)
-        mercado_pago_account.save
-        @order.payment.source = mercado_pago_account
+      load_order_payment
+      case params[:collection_status]
+      when 'pending'
         @order.payment.pend!
-        until @order.state == "confirm"
-            if @order.next!
-              @order.update!
-            end
-        end
-        @order.save
+      when 'in_process'
+        @order.payment.pend!
+      when 'rejected'
+        @order.payment.pend!
       else
-        Rails.logger.error "Respuesta inesperada"
-        Rails.logger.error "order => #{@order.id} | #{@order.number}, collection_id =>#{params[:collection_id]} collection_status => #{params[:collection_status]}"
+        log_unexpected
       end
-    
+      advance_order_status
+      @order.save
     end
 
     private
@@ -70,10 +69,26 @@ module Spree
       flash[:error] = msg
     end
 
+    def load_order_payment
+      @order = Order.find_by_number(params[:external_reference])
+      mercado_pago_account = MercadoPagoAccount.create_from_params(@order, params)
+      @order.payment.source = mercado_pago_account
+    end
 
-
- 
+    def advance_order_status
+      until @order.state == "complete"
+          if @order.next!
+            @order.update!
+            state_callback(:after)
+          end
+      end
+      
+    end
   
+    def log_unexpected
+      Rails.logger.error "Respuesta inesperada"
+      Rails.logger.error "order => #{@order.id} | #{@order.number}, collection_id =>#{params[:collection_id]} collection_status => #{params[:collection_status]}"
+    end
 
   end
 end

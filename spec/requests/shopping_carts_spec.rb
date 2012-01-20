@@ -60,7 +60,6 @@ describe "ShoppingCarts" do
       
       choose('Mercado Pago')
       click_button('Save and Continue')
-      save_and_open_page
       
     end
   end

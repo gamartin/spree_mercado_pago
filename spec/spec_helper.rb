@@ -18,10 +18,10 @@ require 'spree_core'
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 Dir["#{File.dirname(__FILE__)}/factories/*.rb"].each do |f|
-
+  unless f.include?('order_factory')
   fp =  File.expand_path(f)
-  require fp
-
+  require fp  
+  end
 end
 require 'spree_core/testing_support/factories'
 

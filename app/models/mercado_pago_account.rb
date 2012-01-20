@@ -1,8 +1,8 @@
 class MercadoPagoAccount < ActiveRecord::Base
   has_many :payments, :as => :source
   
-  def self.new_from_params(order, params)
-    self.new(:surname => order.bill_address.lastname, 
+  def self.create_from_params(order, params)
+    self.create(:surname => order.bill_address.lastname, 
              :name => order.bill_address.lastname, 
              :email => order.email,
              :collection_id => params[:collection_id],

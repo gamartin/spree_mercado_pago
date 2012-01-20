@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   end
   
   # Add your extension routes here
-  match '/success' => 'checkout#mercado_pago_success'
-  match '/pending/:collection_id/:collection_status/:external_reference/:preference_id' => 'checkout#mercado_pago_pending'
-  
+  match '/success/:collection_id/:collection_status/:external_reference/:preference_id' => 'checkout#mercado_pago_success'
+  match '/pending/:collection_id/:collection_status/:external_reference/:preference_id' => 'checkout#mercado_pago_pending'  
+  match '/notification' => 'mercado_pago_notification#receive'
 end

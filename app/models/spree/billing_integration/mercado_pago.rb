@@ -10,6 +10,20 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
     ActiveMerchant::Billing::Integrations::MercadoPago
   end
 
+  def payment_information(notification_id)
+    begin 
+    url = "https://api.mercadolibre.com/collections/notifications/#{notification_id}?access_token=#{self.access_token}"
+    resp = RestClient.get(url)
+    parsed = JSON.parse(resp)
+  
+    rescue Exception => e
+      puts "Error MercadoPago Payment Notification ID => #{notification_id} | PaymentMethod ID => #{self.id}"
+      puts e.message
+      Rails.logger.error "Error MercadoPago Payment Notification ID => #{notification_id} | PaymentMethod ID => #{self.id}"
+      Rails.logger.error e.message
+      return nil
+    end
+  end
   
   def access_token
     begin
@@ -17,7 +31,7 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
     parsed = JSON.parse(resp)
     parsed['access_token'] || nil
     rescue Exception => e
-         puts 'ERRRROOOOOR ENNNNNNN get token ============'
+         puts 'ERROR EN get token ============'
          puts e.message
          return nil
     end
@@ -33,7 +47,7 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
     formated = JSON.parse(resp)
     formated['init_point'] || nil
     rescue Exception => e
-        puts 'ERRRROOOOOR ENNNNNNN CONFIGURE ITEMS ============'
+        puts 'ERROR EN CONFIGURE ITEMS ============'
         puts e.message
         return nil
     end 
@@ -49,7 +63,7 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
       	'external_reference' => "#{order.number}",
       	'items' => [
       	            {'id' => order.number,
-      		'title' => 'Nombre','description' => 'Descripcin','quantity' => 1,'unit_price' => order.total.to_f,'currency_id' => Spree::BillingIntegration::MercadoPago.first.preferred_currency,
+      		'title' => 'Nombre','description' => 'Descripcin','quantity' => 1,'unit_price' => order.total.to_f,'currency_id' => self.preferred_currency,
       		'picture_url' => 'https =>//www.mercadopago.com/org-img/MP3/home/logomp3.gif'
       	}],
          "payer" => {
@@ -58,8 +72,8 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
         		"email" => "#{order.email}"
         	},
       	'back_urls' => {
-      		'pending' => "http://127.0.0.1:3000/mercado_pago_pending",
-      		'success' => "http://127.0.0.1:3000/mercado_pago_success"
+      		'pending' => "http://127.0.0.1:3000/pending",
+      		'success' => "http://127.0.0.1:3000/success"
       	},
       	"payment_methods" => {
       		"included_payment_types" => [{"id" => "credit_card"}, {"id" => "bank_transfer"}, {"id" =>"atm"}, {"id" =>"ticket"}, {"id"=>"debit_card"}],
@@ -72,9 +86,7 @@ class Spree::BillingIntegration::MercadoPago < BillingIntegration
   end
     
   private
-  
-
-  
+    
   def credentials
     {:grant_type => 'client_credentials', :client_id => self.preferred_client_id,:client_secret => self.preferred_client_secret}
   end  
